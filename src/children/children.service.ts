@@ -8,24 +8,42 @@ import { disconnect } from 'process';
 export class ChildrenService {
   constructor(private readonly db : PrismaService){}
 
-  create(createChildrenDto: CreateChildDto) {
-    return this.db.child.create({
-      data: createChildrenDto
-    });
+  async create(createChildrenDto: CreateChildDto) {
+    try {
+      return await this.db.child.create({
+        data: createChildrenDto
+      });
+    } catch (e) {
+      throw new Error(e.message);
+    }
   }
 
-  findAll() {
-    return this.db.child.findMany();
+  async findAll() {
+    try {
+      return await this.db.child.findMany();
+    } catch (e) {
+      throw new Error(e.message);
+    }
   }
 
 
 
-  findOne(id: number) {
-    return this.db.child.findUnique({where: {id}});
+  async findOne(id: number) {
+    try {
+      let a = await this.db.child.findUnique({where: {id}});
+      if( a.name == ""){
+        return await "There is no child with id " + id
+      } else {
+        return await a;
+      }
+      
+    } catch (e) {
+      throw new Error(e.message);
+    }
   }
 
-  addToy(childId: number, toyId: number) {
-    return this.db.child.update({
+  async addToy(childId: number, toyId: number) {
+    return await this.db.child.update({
       where: {id: childId},
       data: {
         toys: {
@@ -35,12 +53,12 @@ export class ChildrenService {
     })
   }
 
-  update(id: number, updateChildrenDto: UpdateChildDto) {
-    return this.db.child.update({where: {id}, data: updateChildrenDto});
+  async update(id: number, updateChildrenDto: UpdateChildDto) {
+    return await this.db.child.update({where: {id}, data: updateChildrenDto});
   }
 
-  removeToy(childId: number, toyId: number) {
-    return this.db.child.update({
+  async removeToy(childId: number, toyId: number) {
+    return await this.db.child.update({
       where: {id: childId},
       data: {
         toys: {
@@ -49,8 +67,8 @@ export class ChildrenService {
       }
     })
   }
-  remove(id: number) {
-    return this.db.child.delete({where: {id}});
+  async remove(id: number) {
+    return await this.db.child.delete({where: {id}});
   }
 
   

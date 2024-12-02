@@ -8,37 +8,37 @@ export class ChildrenController {
   constructor(private readonly childrenService: ChildrenService) {}
 
   @Post()
-  create(@Body() createChildDto: CreateChildDto) {
-    return this.childrenService.create(createChildDto);
+  async create(@Body() createChildDto: CreateChildDto) {
+    return await this.childrenService.create(createChildDto);
   }
 
   @Get()
-  findAll() {
-    return this.childrenService.findAll();
+  async findAll() {
+    return await this.childrenService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.childrenService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.childrenService.findOne(+id);
   }
 
   @Put(':id/toys/:toyid')
-  addToy(@Param('id') id: string, @Param('toyid') toyId: string){
-    return this.childrenService.addToy(+id,+toyId);
+  async addToy(@Param('id') id: string, @Param('toyid') toyId: string){
+    return await this.childrenService.addToy(+id,+toyId);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChildDto: UpdateChildDto) {
-    return this.childrenService.update(+id, updateChildDto);
+  async update(@Param('id') id: string, @Body() updateChildDto: UpdateChildDto) {
+    return await this.childrenService.update(+id, updateChildDto);
   }
 
   @Delete(':id/toys/:toyid')
-  removeToy(@Param('id') id: string,@Param('toyid') toyId: string){
-    return this.childrenService.removeToy(+id,+toyId);
+  async removeToy(@Param('id') id: string,@Param('toyid') toyId: string){
+    return await this.childrenService.removeToy(+id,+toyId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.childrenService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.childrenService.remove(+id);
   }
 }
