@@ -55,6 +55,19 @@ export class ToysService {
   }
 
   async remove(id: number) {
+    try {
     return await this.db.toy.delete({where: {id}});
-  }
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          return await "Wrong ID"
+        }
+      }
+      if (e.name === 'PrismaClientValidationError') {
+        return await "Invalid";
+      }
+      return await e.name;
+      
+    }
+  } 
 }

@@ -3,6 +3,7 @@ import { CreateChildDto } from './dto/create-child.dto';
 import { UpdateChildDto } from './dto/update-child.dto';
 import { PrismaService } from 'src/prisma.service';
 import { disconnect } from 'process';
+import { Prisma } from "@prisma/client"
 
 @Injectable()
 export class ChildrenService {
@@ -43,29 +44,76 @@ export class ChildrenService {
   }
 
   async addToy(childId: number, toyId: number) {
-    return await this.db.child.update({
-      where: {id: childId},
-      data: {
-        toys: {
-          connect: {id: toyId}
+    try{
+      return await this.db.child.update({
+        where: {id: childId},
+        data: {
+          toys: {
+            connect: {id: toyId}
+          }
+        },
+        include: {
+          toys: true
+        }
+      })
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          return await "Wrong ID"
         }
       }
-    })
+      if (e.name === 'PrismaClientValidationError') {
+        return await "Invalid";
+      }
+      return await e.name;
+      
+    }
+    
   }
 
   async update(id: number, updateChildrenDto: UpdateChildDto) {
-    return await this.db.child.update({where: {id}, data: updateChildrenDto});
+    try {
+      return await this.db.child.update({where: {id}, data: updateChildrenDto});
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          return await "Wrong ID"
+        }
+      }
+      if (e.name === 'PrismaClientValidationError') {
+        return await "Invalid";
+      }
+      return await e.name;
+      
+    }
   }
 
   async removeToy(childId: number, toyId: number) {
-    return await this.db.child.update({
-      where: {id: childId},
-      data: {
-        toys: {
-          disconnect: {id: toyId}
+
+    try {
+      return await this.db.child.update({
+        where: {id: childId},
+        data: {
+          toys: {
+            disconnect: {id: toyId}
+          }
+        },
+        include: {
+          toys: true
+        }
+      })
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          return await "Wrong ID"
         }
       }
-    })
+      if (e.name === 'PrismaClientValidationError') {
+        return await "Invalid";
+      }
+      return await e.name;
+      
+    }
   }
   async remove(id: number) {
     return await this.db.child.delete({where: {id}});
